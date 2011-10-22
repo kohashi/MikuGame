@@ -30,6 +30,7 @@ window.onload = function () {
 	'./img/point.png',
 	'./img/hit.png',
 	'./img/maru.png',
+	'./img/ruka.gif',
 	
 	//ミクさん音楽読み込み
 	]);
@@ -57,13 +58,18 @@ window.onload = function () {
 		game.rootScene.addChild(miku);
 		//枠
 		var w = new Sprite(36,36);
-		w.$.css("border","solid red 1px");
+		//w.$.css("border","solid red 1px");
 		w.image = game.assets['./img/maru.png'];
 		w.moveTo(142,192);
 		game.rootScene.addChild(w);
 	};
 	game.start();
 };
+function randomChose(arr){
+	var rand = Math.floor(Math.random()*arr.length);
+	return arr[rand];
+}
+
 
 var p = 0
 function log(txt){
@@ -90,6 +96,13 @@ function log(txt){
 				top: 147, opacity: 0
 			}
 		  });
+		//ミクちゃん表情
+		//great: [0,4,5,9]
+		//good : [0,1,2,3,7,10,13]
+		//bad  : [6,8,11,12,14]
+		miku.frame = randomChose(txt=="great"?[0,4,5,9]:txt=="good"?[0,1,2,3,7,10,13]:[6,8,11,12,14]);
+		
+		
 		
 		//ポイント表示
 		game.c.$.css("color","red");
