@@ -4,30 +4,17 @@
 *************************************************************************************/
 
 
-body {
-	margin: 0px;
-	padding: 0px;
-}
 *{
+	padding: 0;
+	margin: 0;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* Androidタッチリンク削除 */
 }
 
-
-
-
-/** スクラッチアイテム獲得後画面 */
-@-webkit-keyframes 'allrotation' {
-	0% { -webkit-transform: rotate(0deg); }
-	100% { -webkit-transform: rotate(360deg); }
+body {
+	-webkit-user-select: none;
 }
-
-@-webkit-keyframes 'myzoombounds' {
-0% {-webkit-transform: scale(0.1); }
-70% {-webkit-transform: scale(2.0) }
-100% {-webkit-transform: scale(1.0); }
-}
-
-@-webkit-keyframes 'itemgot' {
-0% {-webkit-transform: scale(2.0); opacity: 0; }
-100% {-webkit-transform: scale(1.0); opacity: 1; }
+/*画面サイズの定義*/
+.stage{
+ 	/*background: -webkit-gradient(linear, left top, left bottom, from(#70BED5), color-stop(0.35,#DDFCF4),color-stop(0.36,#D7FCB9), to(#4EAB38));*/
+ 	background: url("../img/back.png") no-repeat;
 }
