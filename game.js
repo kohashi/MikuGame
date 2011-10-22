@@ -252,6 +252,7 @@ Hit = enchant.Class.create(enchant.Entity, {
 		enchant.Entity.call(this);
 		
 		this.frame = frame;
+<<<<<<< HEAD
 		
 		//this.$.css("background",'url("./img/ruka.gif")');//アニメGIF用
 		
@@ -284,6 +285,36 @@ Hit = enchant.Class.create(enchant.Entity, {
 	},
 	fire : function(){
 	}
+=======
+        
+        this.$.css("border","solid 2px black");
+        
+        this.arrow =  new Sprite(10, 10);
+        this.arrow.image = game.assets['arrow'];
+
+
+
+        
+        this.target =  new Sprite(10, 10);
+        this.target.image = game.assets['target'];
+        
+        this.speed = 10;
+        
+        //この書き方OKなん？
+        this.width = this.arrow.width = this.target.width = 20;
+        this.height = this.arrow.height = this.target.height = 20;
+        
+        this.$.append(this.arrow.$);
+
+    },
+    move2 : function(x,y){
+        this.tareget.moveTo(x,y);
+        this.moveTo(x,y);
+    
+    },
+    fire : function(){
+    }
+>>>>>>> commit test
 
 });
 
