@@ -3,7 +3,6 @@
 
 
 
-
 //＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 // ＊グローバル変数
 var game = null;
@@ -44,9 +43,9 @@ window.onload = function () {
 		game.rootScene.addEventListener(Event.ENTER_FRAME,frameEvent);
 		
 		//プロンプト
-		var p = new Label("point : ");p.moveTo(10,230);p.color = "white";p.$.css("font-weight","bold"); p.$.css("font-size","120%");
+		var p = new Label("point : ");p.moveTo(10,105);p.color = "white";p.$.css("font-weight","bold"); p.$.css("font-size","120%");
 		game.rootScene.addChild(p);
-		game.c = new Label("0");game.c.moveTo(60,231);game.c.color = "white";game.c.$.css("font-weight","bold");game.c.$.css("font-size","120%");
+		game.c = new Label("0");game.c.moveTo(60,106);game.c.color = "white";game.c.$.css("font-weight","bold");game.c.$.css("font-size","120%");
 		game.rootScene.addChild(game.c);
 		
 		//クリックイベント
@@ -62,6 +61,24 @@ window.onload = function () {
 		w.image = game.assets['./img/maru.png'];
 		w.moveTo(142,192);
 		game.rootScene.addChild(w);
+		
+		//ヒット表示
+		var hit = new Sprite(90,32);
+		hit.image = game.assets['./img/hit.png'];
+		hit.moveTo(52,192);
+		hit.count = 0;
+		game.rootScene.addChild(hit);
+		var _interval = setInterval(function(){
+			hit.$.toggle();
+			if(hit.count++ > 3){
+				clearInterval(_interval);
+				game.rootScene.removeChild(hit);
+			}
+		},500);
+		
+		
+		
+		
 	};
 	game.start();
 };
@@ -143,36 +160,37 @@ var touchFunc = function(e){
 	}
 }
 
+
+//フレームごとに行う処理(メインループ） #######################
 var f = 1;
 var arr = [];
 var frameEvent = function(e) {
+	
+	f++;
+	//NG判定 --------
+	if(arr.length){
+		var h = arr[0];
 		
-		f++;
-		//NG判定 --------
-		if(arr.length){
-			var h = arr[0];
-			
-			if(h.frame + 2== f){//2フレームオーバー
-				log("bad")
-				arr.shift();
-			}
+		if(h.frame + 2== f){//2フレームオーバー
+			log("bad")
+			arr.shift();
 		}
-		
-		//設定JSON読み込み ------
-		d = karaok[f];
-		if(!d) return;
-		
-		if(d.p){//セリフ
-		  console.log(d.p)
-		}
-		if(d.t){//ボタン
-			var hit = new Hit(f+13);
-			hit.moveTo(20,0);
-			game.rootScene.addChild(hit);rmObj(hit);
-			hit.$.keyframe({
+	}
+	
+	//設定JSON読み込み ------
+	d = karaok[f];
+	if(!d) return;
+	
+	if(d.p){//セリフ
+	  console.log(d.p)
+	}
+	if(d.t){//ボタン
+		var hit = new Hit(f+13);
+		hit.moveTo(20,0);
+		game.rootScene.addChild(hit);rmObj(hit);
+		hit.$.keyframe({
 			  start: {
 				top: 20, left: 0,
-				width: 20, height:20,
 				},
 			100: {
 				top:0, left: 20,
@@ -193,10 +211,33 @@ var frameEvent = function(e) {
 			1500:{
 				left : 400
 			}
-		  });
-		  arr.push(hit)
-	  }
-	  //設定JSONおわり
+		});
+		arr.push(hit)
+	}
+	//終了判定
+	if(d.end){
+		//スコア拡大表示
+		
+		game.c.$.css("color","white");
+		game.c.$.css("font-size","500%");
+		game.c.$.css("text-shadow","2px 2px 4px pink");
+		game.c.$.keyframe({
+			  start: {
+				  "font-size":"120%"
+				  },
+			  500: {"font-size":"500%"
+			  }
+		})
+		
+		setTimeout(function(){
+			var score = p;
+			game.end(score,'ミクちゃんとみくみくダンスして、' + score + '点で死にました');
+		},2800);
+	}
+	
+	
+	
+	//設定JSONおわり
 }
 
 //動いてくるヤツ
@@ -206,23 +247,18 @@ Hit = enchant.Class.create(enchant.Entity, {
 		
 		this.frame = frame;
 		
-		this.$.css("border","solid 2px black");
+		//this.$.css("border","solid 2px black");
+		this.$.css("background",'url("./img/ruka.gif")');
 		
-		this.arrow =  new Sprite(10, 10);
-		this.arrow.image = game.assets['arrow'];
-
-
 		
-		this.target =  new Sprite(10, 10);
-		this.target.image = game.assets['target'];
+
 		
 		this.speed = 10;
 		
-		//この書き方OKなん？
-		this.width = this.arrow.width = this.target.width = 20;
-		this.height = this.arrow.height = this.target.height = 20;
+		this.width = 64;
+		this.height = 64;
 		
-		this.$.append(this.arrow.$);
+		
 
 	},
 	move2 : function(x,y){
@@ -256,7 +292,7 @@ var rootScean = function(){
 
 //JSONの設定データ
 var karaok = {
-		0 : {p:'わん、つー、さん、しー'},
+	   0 : {p:'わん、つー、さん、しー'},
 	  10 : {t:1,s:10},//タイプ：１（１しかねぇ）、スピード：１０
 	  
 	  10 : {t:1,s:10},
@@ -267,6 +303,8 @@ var karaok = {
 	  30 : {t:1,s:10},
 	  40 : {t:1,s:10},
 	  50 : {t:1,s:10},
+	
+	82 : {end:true},//終わり
 }
 
 
