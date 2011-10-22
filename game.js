@@ -166,6 +166,7 @@ Hit = enchant.Class.create(enchant.Entity, {
         this.arrow =  new Sprite(10, 10);
         this.arrow.image = game.assets['arrow'];
 
+
         
         this.target =  new Sprite(10, 10);
         this.target.image = game.assets['target'];
