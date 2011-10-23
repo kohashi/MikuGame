@@ -29,9 +29,11 @@ window.onload = function () {
 	'./img/point.png',
 	'./img/hit.png',
 	'./img/maru.png',
-	'./img/ruka.gif',
+	//'./img/ruka.gif',
+	'./img/ruka.png',
 	
 	//ミクさん音楽読み込み
+	'./music/osietedaring.mp3',
 	]);
 
 	game.onload = function () {
@@ -63,19 +65,11 @@ window.onload = function () {
 		game.rootScene.addChild(w);
 		
 		//ヒット表示
-		var hit = new Sprite(90,32);
+		window.hit = new Sprite(90,32);
 		hit.image = game.assets['./img/hit.png'];
 		hit.moveTo(52,192);
 		hit.count = 0;
 		game.rootScene.addChild(hit);
-		var _interval = setInterval(function(){
-			hit.$.toggle();
-			if(hit.count++ > 3){
-				clearInterval(_interval);
-				game.rootScene.removeChild(hit);
-			}
-		},500);
-		
 		
 		
 		
@@ -141,6 +135,7 @@ function log(txt){
 }
 function rmObj(obj){
 		setTimeout(function(){
+				if(obj._interval){clearInterval(obj._interval)}
 			game.rootScene.removeChild(obj);
 		},3000);
 }
@@ -165,6 +160,17 @@ var touchFunc = function(e){
 var f = 1;
 var arr = [];
 var frameEvent = function(e) {
+	//初回のみ
+	if(f == 1){
+		game.assets['./music/osietedaring.mp3'].play();
+		var _interval = setInterval(function(){
+			window.hit.$.toggle();
+			if(window.hit.count++ > 3){
+				clearInterval(_interval);
+				game.rootScene.removeChild(window.hit);
+			}
+		},500);
+	}
 	
 	f++;
 	//NG判定 --------
@@ -247,11 +253,21 @@ Hit = enchant.Class.create(enchant.Entity, {
 		
 		this.frame = frame;
 		
-		//this.$.css("border","solid 2px black");
-		this.$.css("background",'url("./img/ruka.gif")');
+		//this.$.css("background",'url("./img/ruka.gif")');//アニメGIF用
 		
 		
-
+		//以下PNGアニメ用
+		this._child = new Sprite(64,64);
+		
+		this._child.image = game.assets['./img/ruka.png'];
+		this.$.append(this._child.$);
+		var _child = this._child;
+		
+		this._interval = setInterval(function(){
+			_child.frame++;
+		},80);
+		
+		
 		
 		this.speed = 10;
 		
