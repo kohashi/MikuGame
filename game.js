@@ -1,7 +1,14 @@
 //＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
-
-
-
+// テキトーに書いたので参考になるコードはないお。まぁゆっくりするといいお
+//　 　　　　＿＿＿_　　　　　　
+//　　　　／_ノ 　 ヽ_＼　　　　
+//　　 ／（ ●）　（ ●）＼　　　
+//　／ ::::::⌒（__人__）⌒:::::＼　
+//　|　　　　　　 ￣　　　　　 |　
+//　＼ 　 　 　 　　 　　　 ／ 　
+//
+//
+//
 
 //＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 // ＊グローバル変数
@@ -50,6 +57,12 @@ window.onload = function () {
 		game.c = new Label("0");game.c.moveTo(60,106);game.c.color = "white";game.c.$.css("font-weight","bold");game.c.$.css("font-size","120%");
 		game.rootScene.addChild(game.c);
 		
+		
+		//歌詞表示
+		game.w = new Label("わんつーさんしー");game.w.moveTo(10,140);game.w.color = "white";game.w.$.css("font-weight","bold");game.w.$.css("font-size","100%");
+		game.rootScene.addChild(game.w);
+
+		
 		//クリックイベント
 		game.rootScene.addEventListener(enchant.Event.TOUCH_START, touchFunc)
 		//ミクさん
@@ -69,9 +82,7 @@ window.onload = function () {
 		hit.image = game.assets['./img/hit.png'];
 		hit.moveTo(52,192);
 		hit.count = 0;
-		game.rootScene.addChild(hit);
-		
-		
+		game.rootScene.addChild(hit);		
 		
 	};
 	game.start();
@@ -108,7 +119,7 @@ function log(txt){
 			}
 		  });
 		//ミクちゃん表情
-		//great: [0,4,5,9]
+		//great: [0,4,5,9,9,9,9]
 		//good : [0,1,2,3,7,10,13]
 		//bad  : [6,8,11,12,14]
 		miku.frame = randomChose(txt=="great"?[0,4,5,9]:txt=="good"?[0,1,2,3,7,10,13]:[6,8,11,12,14]);
@@ -133,11 +144,11 @@ function log(txt){
 	game.c.text = p;
 	console.log(f +":"+ txt)
 }
-function rmObj(obj){
+function rmObj(obj,time){
 		setTimeout(function(){
 				if(obj._interval){clearInterval(obj._interval)}
 			game.rootScene.removeChild(obj);
-		},3000);
+		}, time || 3000);
 }
 
 var touchFunc = function(e){
@@ -154,6 +165,59 @@ var touchFunc = function(e){
 		
 	}
 }
+
+
+
+//動いてくるヤツ
+Hit = enchant.Class.create(enchant.Entity, {
+	initialize: function(frame) {
+		enchant.Entity.call(this);
+		
+		this.frame = frame;
+		
+		//this.$.css("background",'url("./img/ruka.gif")');//アニメGIF用
+		
+		
+		//以下PNGアニメ用
+		this._child = new Sprite(64,64);
+		
+		this._child.image = game.assets['./img/ruka.png'];
+		this.$.append(this._child.$);
+		var _child = this._child;
+		
+		this._interval = setInterval(function(){
+			_child.frame++;
+		},80);
+		
+		
+		
+		this.speed = 10;
+		
+		this.width = 64;
+		this.height = 64;
+		
+		
+
+	}
+});
+
+
+//口パクミクさんオブジェクト
+enchant.OK = enchant.Class.create(enchant.Sprite, {
+	initialize: function(w,h) {
+		enchant.Sprite.call(this);
+		this.image = game.assets['arrow'];
+	},
+	face: function(n){
+		this.image = game.assets['face' + n + '.png'];
+	}
+});
+
+//大元のシーン管理
+var rootScean = function(){
+	sceneMap = new Scene();
+}
+
 
 
 //フレームごとに行う処理(メインループ） #######################
@@ -187,9 +251,6 @@ var frameEvent = function(e) {
 	d = karaok[f];
 	if(!d) return;
 	
-	if(d.p){//セリフ
-	  console.log(d.p)
-	}
 	if(d.t){//ボタン
 		var hit = new Hit(f+13);
 		hit.moveTo(20,0);
@@ -203,22 +264,25 @@ var frameEvent = function(e) {
 				opacity: 1
 			},
 			257: {
-				left: 150,
+				left: 140,
 			},
 			560: {
 				top: 30
 			},
 			1300: {
-				top: [300, 'easeInExpo'],
+				top: [256, 'easeInExpo'],
 				'line-height': '60px',
 				
-				left: 150,
+				left: 140,
 			},
-			1500:{
+			1800:{
 				left : 400
 			}
 		});
 		arr.push(hit)
+	}
+	if(d.p){//歌詞
+		console.log("talk : " + d.p)
 	}
 	//終了判定
 	if(d.end){
@@ -246,112 +310,51 @@ var frameEvent = function(e) {
 	//設定JSONおわり
 }
 
-//動いてくるヤツ
-Hit = enchant.Class.create(enchant.Entity, {
-	initialize: function(frame) {
-		enchant.Entity.call(this);
-		
-		this.frame = frame;
-<<<<<<< HEAD
-		
-		//this.$.css("background",'url("./img/ruka.gif")');//アニメGIF用
-		
-		
-		//以下PNGアニメ用
-		this._child = new Sprite(64,64);
-		
-		this._child.image = game.assets['./img/ruka.png'];
-		this.$.append(this._child.$);
-		var _child = this._child;
-		
-		this._interval = setInterval(function(){
-			_child.frame++;
-		},80);
-		
-		
-		
-		this.speed = 10;
-		
-		this.width = 64;
-		this.height = 64;
-		
-		
-
-	},
-	move2 : function(x,y){
-		this.tareget.moveTo(x,y);
-		this.moveTo(x,y);
-	
-	},
-	fire : function(){
-	}
-=======
-        
-        this.$.css("border","solid 2px black");
-        
-        this.arrow =  new Sprite(10, 10);
-        this.arrow.image = game.assets['arrow'];
-
-
-
-        
-        this.target =  new Sprite(10, 10);
-        this.target.image = game.assets['target'];
-        
-        this.speed = 10;
-        
-        //この書き方OKなん？
-        this.width = this.arrow.width = this.target.width = 20;
-        this.height = this.arrow.height = this.target.height = 20;
-        
-        this.$.append(this.arrow.$);
-
-    },
-    move2 : function(x,y){
-        this.tareget.moveTo(x,y);
-        this.moveTo(x,y);
-    
-    },
-    fire : function(){
-    }
->>>>>>> commit test
-
-});
-
-
-//口パクミクさんオブジェクト
-enchant.OK = enchant.Class.create(enchant.Sprite, {
-	initialize: function(w,h) {
-		enchant.Sprite.call(this);
-		this.image = game.assets['arrow'];
-	},
-	face: function(n){
-		this.image = game.assets['face' + n + '.png'];
-	}
-});
-
-//大元のシーン管理
-var rootScean = function(){
-	sceneMap = new Scene();
-}
-
-
 
 //JSONの設定データ
 var karaok = {
-	   0 : {p:'わん、つー、さん、しー'},
+	/*   0 : {p:'わん、つー、さん、しー'},
 	  10 : {t:1,s:10},//タイプ：１（１しかねぇ）、スピード：１０
 	  
 	  10 : {t:1,s:10},
 	  15 : {t:1,s:10},
-	  25 : {t:1,s:10},
-	  35 : {t:1,s:10},
 	  20 : {t:1,s:10},
+	  25 : {t:1,s:10},
 	  30 : {t:1,s:10},
+	  35 : {t:1,s:10},
 	  40 : {t:1,s:10},
 	  50 : {t:1,s:10},
-	
-	82 : {end:true},//終わり
+	  82 : {end:true},//終わり
+	  */
+	  25 : {t:1,s:10},
+	  35 : {t:1,s:10},
+	  45 : {t:1,s:10},
+	  55 : {t:1,s:10},
+	  65 : {t:1,s:10},
+	  75 : {t:1,s:10},
+	  85 : {t:1,s:10},
+	  95 : {t:1,s:10},
+	 105 : {t:1,s:10},
+	 110 : {p:"わん、つー、さん、はい"},
+	 112 : {t:1,s:10},
+	 114 : {t:1,s:10},
+	 116 : {t:1,s:10},
+	 125 : {t:1,s:10},
+	 135 : {t:1,s:10},
+	 145 : {t:1,s:10},
+	 155 : {t:1,s:10},
+	 165 : {t:1,s:10},
+	 175 : {t:1,s:10},
+	 185 : {t:1,s:10},
+	 195 : {t:1,s:10},
+	 205 : {t:1,s:10},
+	 215 : {t:1,s:10},
+	 225 : {t:1,s:10},
+	 235 : {t:1,s:10},
+	 245 : {t:1,s:10},
+	  25 : {t:1,s:10},
+	  25 : {t:1,s:10},
+	  25 : {t:1,s:10},
 }
 
 
