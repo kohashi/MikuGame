@@ -35,17 +35,13 @@ window.onload = function () {
 	game.time = 300;
 	game.preload([
 	//ミクさん画像を読み込み
-	//'face_01.png',
-	//'face_02.png',
-	//'face_03.png',
-	//'face_04.png',
-	//'face_05.png'
 	'./img/miku.png',
 	'./img/point.png',
 	'./img/hit.png',
 	'./img/maru.png',
 	//'./img/ruka.gif',
 	'./img/ruka.png',
+	'./img/back.png',
 	
 	//ミクさん音楽読み込み
 	'./music/osietedaring.mp3',
@@ -55,6 +51,9 @@ window.onload = function () {
 		//game.pushScene(rootScean()); //shebangで指定があればそちらを取得
 		game.rootScene.backgroundColor = '#000000';
 		game.rootScene.$.addClass('stage')
+		var bg = new Sprite(320,320);
+		bg.image = game.assets['./img/back.png'];
+		game.rootScene.addChild(bg);
 		
 		game.rootScene.addEventListener(Event.ENTER_FRAME,frameEvent);
 		game.rootScene.addEventListener(Event.ENTER_FRAME,frameEvent);
@@ -323,7 +322,7 @@ var frameEvent = function(e) {
 		
 		setTimeout(function(){
 			var score = p;
-			game.end(score,'ミクちゃんとみくみくダンスして、' + score + '点で死にました');
+			game.end(score,'ミクちゃんに' + score + '点で、みっくみくにされたよ！');
 		},2800);
 	}
 	

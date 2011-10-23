@@ -1,5 +1,4 @@
 /************************************************************************************
- * aegis特有でなく、ほかのプロジェクトでも使用可能な
  * アプリケーション全体で使用するCSSを記述する
 *************************************************************************************/
 
@@ -16,5 +15,5 @@ body {
 /*画面サイズの定義*/
 .stage{
  	/*background: -webkit-gradient(linear, left top, left bottom, from(#70BED5), color-stop(0.35,#DDFCF4),color-stop(0.36,#D7FCB9), to(#4EAB38));*/
- 	background: url("../img/back.png") no-repeat;
+ 	/*background: url("../img/back.png") no-repeat;*/
 }
