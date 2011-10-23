@@ -1,5 +1,5 @@
 /**
- * enchant.js v0.4.0
+ * enchant.js v0.4.1
  *
  * Copyright (c) Ubiquitous Entertainment Inc.
  * Dual licensed under the MIT or GPL Version 3 licenses
@@ -1310,6 +1310,30 @@ enchant.Entity = enchant.Class.create(enchant.Node, {
         }
     },
     /**
+     * DOMのID.
+     * @type {String}
+     */
+    id: {
+        get: function() {
+            return this._element.id;
+        },
+        set: function(id) {
+            this._element.id = id;
+        }
+    },
+    /**
+     * DOMのclass.
+     * @type {String}
+     */
+    className: {
+        get: function() {
+            return this._element.className;
+        },
+        set: function(className) {
+            this._element.className = className;
+        }
+    },
+    /**
      * Entityの横幅.
      * @type {Number}
      */
@@ -2429,6 +2453,22 @@ enchant.Surface = enchant.Class.create(enchant.EventTarget, {
         var clone = new enchant.Surface(this.width, this.height);
         clone.draw(this);
         return clone;
+    },
+    /**
+     * SurfaceからdataスキームのURLを生成する.
+     * @return {String} Surfaceを表すdataスキームのURL.
+     */
+    toDataURL: function() {
+        var src = this._element.src;
+        if (src) {
+            if (src.slice(0, 5) == 'data:') {
+                return src;
+            } else {
+                return this.clone().toDataURL();
+            }
+        } else {
+            return this._element.toDataURL();
+        }
     }
 });
 

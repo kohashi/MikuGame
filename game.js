@@ -1,11 +1,11 @@
 //＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 // テキトーに書いたので参考になるコードはないお。まぁゆっくりするといいお
-//　　　　＿＿＿_　　　　　　
-//　　　／_ノ   ヽ_＼　　　　
-//　  ／（●） （●）＼　ほんとテキトーだお…enchant.jsの勉強会聞きながら書いて
-//　／:::⌒（_人_）⌒::＼　その後酒飲みながら書いたお…
-// |          ￣        |　書いた環境もmacbook air と winでバラバラだしファイルもわけてねーし…
-//　＼                 ／ 　
+//        ＿＿＿_            
+//      ／_ノ   ヽ_＼        
+//    ／（●） （●）＼  ほんとテキトーだお…enchant.jsの勉強会聞きながら書いて
+//  ／:::⌒（_人_）⌒::＼  その後酒飲みながら書いたお…
+//  |          ￣       |  書いた環境もmacbook air と winでバラバラだしファイルもわけてねーし…
+//  ＼                 ／    
 //
 //あと、このAAは等幅フォントで見ないと超ずれると思うお
 //
@@ -29,7 +29,9 @@ window.onload = function () {
 
 	enchant();
 
-
+	var ua = navigator.userAgent;
+	window.musicFile = (ua.indexOf("firefox") || ua.indexOf("opera")) ? './music/osietedaring.ogg' : './music/osietedaring.mp3';
+	
 	game = new Game(320,320);
 	game.fps = 10;
 	game.time = 300;
@@ -44,7 +46,7 @@ window.onload = function () {
 	'./img/back.png',
 	
 	//ミクさん音楽読み込み
-	'./music/osietedaring.mp3',
+	musicFile,
 	]);
 
 	game.onload = function () {
@@ -239,7 +241,7 @@ var arr = [];
 var frameEvent = function(e) {
 	//初回のみ
 	if(f == 1){
-		game.assets['./music/osietedaring.mp3'].play();
+		game.assets[window.musicFile].play();
 		var _interval = setInterval(function(){
 			window.hit.$.toggle();
 			if(window.hit.count++ > 3){
