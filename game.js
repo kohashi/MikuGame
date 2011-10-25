@@ -4,7 +4,7 @@
 //      ／_ノ   ヽ_＼        
 //    ／（●） （●）＼  ほんとテキトーだお…enchant.jsの勉強会聞きながら書いて
 //  ／:::⌒（_人_）⌒::＼  その後酒飲みながら書いたお…
-//  |          ￣       |  書いた環境もmacbook air と winでバラバラだしファイルもわけてねーし…
+//  |                   |  書いた環境もmacbook air と winでバラバラだしファイルもわけてねーし…
 //  ＼                 ／    
 //
 //あと、このAAは等幅フォントで見ないと超ずれると思うお
@@ -25,17 +25,21 @@ var log2me = "";
 
 //＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 // 起動時に実行
+jQuery.fx.interval = 1300
+enchant();
+enchant.Sound.enabledInMobileSafari = true;
 window.onload = function () {
 
-	enchant();
 
 	var ua = navigator.userAgent;
 	window.musicFile = (ua.indexOf("firefox") || ua.indexOf("opera")) ? './music/osietedaring.ogg' : './music/osietedaring.mp3';
 	
 	game = new Game(320,320);
-	game.fps = 10;
-	game.time = 300;
+	game.fps = 30;
 	game.preload([
+	//ミクさん音楽読み込み
+	musicFile,
+	
 	//ミクさん画像を読み込み
 	'./img/miku.png',
 	'./img/point.png',
@@ -45,8 +49,6 @@ window.onload = function () {
 	'./img/ruka.png',
 	'./img/back.png',
 	
-	//ミクさん音楽読み込み
-	musicFile,
 	]);
 
 	game.onload = function () {
@@ -57,7 +59,6 @@ window.onload = function () {
 		bg.image = game.assets['./img/back.png'];
 		game.rootScene.addChild(bg);
 		
-		game.rootScene.addEventListener(Event.ENTER_FRAME,frameEvent);
 		game.rootScene.addEventListener(Event.ENTER_FRAME,frameEvent);
 		
 		
@@ -169,13 +170,16 @@ var touchFunc = function(e){
 	log("clicked")
 	if(arr.length){
 		var h = arr[0];
-		if(h.frame == f){
+		if(h.frame - 4 == f){
+			log("bad")
+			arr.shift();
+		}else if(h.frame == f){
 			log("great");
 			arr.shift();
 		}else if(h.frame < f +2 || h.frame < f - 2){
 			log("good");
 			arr.shift();
-		}
+		} 
 		
 	}
 }
@@ -236,11 +240,11 @@ var rootScean = function(){
 
 
 //フレームごとに行う処理(メインループ） #######################
-var f = 1;
+var frameCount = 1;
 var arr = [];
 var frameEvent = function(e) {
 	//初回のみ
-	if(f == 1){
+	if(frameCount == 1){
 		game.assets[window.musicFile].play();
 		var _interval = setInterval(function(){
 			window.hit.$.toggle();
@@ -251,7 +255,11 @@ var frameEvent = function(e) {
 		},500);
 	}
 	
-	f++;
+	frameCount++;
+	
+	if(frameCount%3)return
+	
+	f = Math.floor(frameCount/3)
 	//NG判定 --------
 	if(arr.length){
 		var h = arr[0];
@@ -507,7 +515,7 @@ var karaok = {
 	  
 	  
 	  
-	1200 : {end : true}
+	1190 : {end : true}
 }
 
 
