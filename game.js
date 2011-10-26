@@ -22,6 +22,7 @@
 // ＊グローバル変数
 var game = null;
 var log2me = "";
+var f = 0;
 
 //＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 // 起動時に実行
@@ -121,16 +122,11 @@ function log(txt){
 		//噴出し表示
 		var fukidashi = new Sprite(61,40);fukidashi.image=game.assets['./img/point.png'];;
 		fukidashi.frame = txt=="great"?2:txt=="good"?1:0;
+		fukidashi.moveTo(175,180);
 		game.rootScene.addChild(fukidashi);rmObj(fukidashi);
-		fukidashi.$.keyframe({
-			start: {
-				top: 170, left: 180, opacity: 1
-			},120: {
-				top: 170, opacity: 0.9
-			},1457: {
-				top: 147, opacity: 0
-			}
-		  });
+		fukidashi.$.addClass('log_bless')
+		console.log("a")
+		
 		//ミクちゃん表情
 		//great: [0,4,5,9,9,9,9]
 		//good : [0,1,2,3,7,10,13]
